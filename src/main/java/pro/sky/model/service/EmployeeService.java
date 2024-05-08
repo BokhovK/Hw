@@ -7,45 +7,45 @@ import pro.sky.exception.EmployeeStorageIsFullException;
 import pro.sky.model.Employee;
 
 
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 
 @Service
 public class EmployeeService {
     private final int maxEmployee = 10;
-    private final List<Employee> employees = new ArrayList<>();
+    private final Map<String, Employee> employees = new HashMap<>();
     public Employee add(String firstname, String lastName){
-      Employee employee = new Employee(firstname, lastName);
-      if(employees.contains(employee)){
+     String key = buildKey(firstname, lastName);
+      if(employees.containsKey(key)){
           throw new EmployeeAlreadyAddedException();
       }
       if(employees.size()>=maxEmployee){
           throw new EmployeeStorageIsFullException();
       }
-      employees.add(employee);
+        Employee employee = new Employee(firstname, lastName);
+      employees.put(key, employee);
       return employee;
     }
     public Employee remove(String firstname, String lastName){
-        Employee employee = new Employee(firstname, lastName);
-        if(!employees.contains(employee)){
+        String key = buildKey(firstname, lastName);
+        if(!employees.containsKey(key)){
             throw new EmployeeNotFoundException();
         }
-        employees.remove(employee);
-        return employee;
+        return employees.remove(key);
     }
     public Employee find(String firstname, String lastName){
-        Employee employee = new Employee(firstname, lastName);
-        if(!employees.contains(employee)){
+        String key = buildKey(firstname, lastName);
+        if(!employees.containsKey(key)){
             throw new EmployeeNotFoundException();
         }
 
-        return employee;
+        return employees.get(key);
+    }
+    public String buildKey(String name, String surname){
+        return name + surname;
     }
     public List<Employee> findAll(){
-        return Collection.unmodifiableList(employees);
+        return List.copyOf(new ArrayList<>(employees.values()));
     }
 
 }
