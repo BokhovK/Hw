@@ -8,7 +8,7 @@ import pro.sky.service.CalculService;
 
 @RestController
 @RequestMapping("/calculator")
-
+//Домашняя работа
 public class CalculContr {
     private final CalculService calculService;
 
